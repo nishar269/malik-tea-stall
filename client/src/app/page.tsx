@@ -32,9 +32,7 @@ export default function Home() {
 
       {/* 🌿 Minimalist Hero Section */}
       <section className="relative pt-32 pb-20 px-6 sm:px-12 max-w-7xl mx-auto flex flex-col items-center text-center">
-        <div className="inline-block mb-4 px-3 py-1 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 rounded-full text-sm font-medium tracking-wide">
-          100% Natural & Homemade
-        </div>
+
 
         <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
           Pure Taste. <br className="hidden md:block" />
