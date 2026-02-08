@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Product } from '@/types';
-import { ArrowRight } from 'lucide-react';
+import { ShoppingBag, ArrowUpRight } from 'lucide-react';
 
 export default function ProductCard({ product }: { product: Product }) {
     const lowestPrice = product.variants && product.variants.length > 0
@@ -9,48 +9,69 @@ export default function ProductCard({ product }: { product: Product }) {
         : 0;
 
     return (
-        <div className="group border border-gray-100 dark:border-neutral-800 bg-white dark:bg-neutral-900 rounded-lg overflow-hidden transition-shadow hover:shadow-lg">
-            <Link href={`/products/${product._id}`} className="block relative aspect-square bg-gray-50 dark:bg-neutral-800">
-                {product.imageUrl ? (
-                    <Image
-                        src={product.imageUrl}
-                        alt={product.name}
-                        fill
-                        className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
-                ) : (
-                    <div className="flex items-center justify-center h-full text-gray-300 dark:text-gray-600 font-bold text-4xl">
-                        🍵
-                    </div>
-                )}
-                {product.isOutOfStock && (
-                    <div className="absolute top-2 left-2 bg-neutral-900 text-white text-[10px] font-bold px-2 py-1 rounded">
-                        SOLD OUT
-                    </div>
-                )}
-            </Link>
-
-            <div className="p-4">
-                <Link href={`/products/${product._id}`} className="hover:text-emerald-600 transition-colors">
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1 line-clamp-1" title={product.name}>
-                        {product.name}
-                    </h3>
+        <div className="group relative bg-white dark:bg-stone-900 rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-stone-200/50 dark:hover:shadow-black/50 border border-stone-100 dark:border-stone-800">
+            {/* Image Container with Floating Badge */}
+            <div className="relative aspect-[4/5] bg-stone-50 dark:bg-stone-800 overflow-hidden">
+                <Link href={`/products/${product._id}`} className="block h-full w-full">
+                    {product.imageUrl ? (
+                        <Image
+                            src={product.imageUrl}
+                            alt={product.name}
+                            fill
+                            className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                    ) : (
+                        <div className="flex items-center justify-center h-full text-stone-300 dark:text-stone-600 text-6xl font-light">
+                            🍵
+                        </div>
+                    )}
                 </Link>
-                <div className="flex items-center justify-between mt-2">
-                    <p className="text-gray-500 text-sm">{product.category}</p>
-                    <span className="font-bold text-emerald-700 dark:text-emerald-400">
-                        ₹{lowestPrice}
-                    </span>
-                </div>
+
+                {/* Floating Action Button */}
+                <button className="absolute bottom-4 right-4 bg-white/90 dark:bg-black/80 backdrop-blur-md p-3 rounded-full text-stone-900 dark:text-white shadow-lg transform translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 hover:bg-amber-500 hover:text-white">
+                    <ShoppingBag size={20} />
+                </button>
+
+                {product.isOutOfStock && (
+                    <div className="absolute top-4 left-4 bg-red-500/90 text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider backdrop-blur-sm shadow-sm">
+                        Sold Out
+                    </div>
+                )}
             </div>
 
-            <Link
-                href={`/products/${product._id}`}
-                className="block w-full text-center bg-gray-50 dark:bg-neutral-800 hover:bg-emerald-50 dark:hover:bg-emerald-900 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-emerald-700 dark:hover:text-emerald-400 border-t border-gray-100 dark:border-neutral-800 transition-colors"
-            >
-                View Details
-            </Link>
+            {/* Elegant Content */}
+            <div className="p-6">
+                <div className="flex justify-between items-start mb-2">
+                    <Link href={`/products/${product._id}`} className="group-hover:text-amber-600 transition-colors">
+                        <h3 className="font-serif text-xl font-bold text-stone-900 dark:text-white line-clamp-1 leading-tight">
+                            {product.name}
+                        </h3>
+                    </Link>
+                    <Link href={`/products/${product._id}`} className="text-stone-300 hover:text-amber-500 transition-colors">
+                        <ArrowUpRight size={20} />
+                    </Link>
+                </div>
+
+                <p className="text-stone-500 text-sm mb-4 line-clamp-1 font-medium tracking-wide uppercase text-[10px]">
+                    {product.category}
+                </p>
+
+                <div className="flex items-end justify-between border-t border-stone-100 dark:border-stone-800 pt-4 mt-2">
+                    <div>
+                        <span className="text-xs text-stone-400 block mb-1">Starting from</span>
+                        <span className="text-2xl font-bold text-amber-600 dark:text-amber-500 font-serif">
+                            ₹{lowestPrice}
+                        </span>
+                    </div>
+                    <Link
+                        href={`/products/${product._id}`}
+                        className="text-xs font-bold uppercase tracking-widest text-stone-900 dark:text-white hover:underline decoration-amber-500 underline-offset-4 decoration-2"
+                    >
+                        View Details
+                    </Link>
+                </div>
+            </div>
         </div>
     );
 }
