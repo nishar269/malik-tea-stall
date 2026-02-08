@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
 import { Product } from '@/types';
-import { ArrowRight, CheckCircle } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
@@ -28,101 +28,65 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen font-sans bg-white dark:bg-black text-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <div className="bg-white dark:bg-black min-h-screen text-gray-900 dark:text-gray-100 font-sans">
 
-      {/* 🌿 Minimalist Hero Section */}
-      <section className="relative pt-32 pb-20 px-6 sm:px-12 max-w-7xl mx-auto flex flex-col items-center text-center">
-
-
-        <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
-          Pure Taste. <br className="hidden md:block" />
-          <span className="text-gray-400 dark:text-gray-600">Zero Compromise.</span>
+      {/* Simple Banner */}
+      <div className="bg-emerald-50 dark:bg-emerald-900/10 py-16 px-6 text-center">
+        <h1 className="text-3xl md:text-5xl font-bold text-emerald-800 dark:text-emerald-400 mb-4">
+          Malik Tea Stall
         </h1>
-
-        <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mb-10 leading-relaxed">
-          Experience the authentic flavor of Kalikiri's finest Badam Milk, Ragi Malt, and Tea Powders.
-          Handcrafted daily with zero preservatives.
+        <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto mb-8">
+          Fresh, homemade health mixes and tea powders. Order online, pickup instantly in Kalikiri.
         </p>
+        <Link
+          href="/products"
+          className="inline-flex items-center px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors"
+        >
+          View All Products
+        </Link>
+      </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-          <Link
-            href="/products"
-            className="px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-semibold rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition-all flex items-center justify-center gap-2"
-          >
-            Shop Now <ArrowRight size={18} />
-          </Link>
-          <Link
-            href="/about"
-            className="px-8 py-4 bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white font-semibold rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-all flex items-center justify-center"
-          >
-            Our Story
+      {/* Featured Products */}
+      <section className="py-16 px-6 max-w-7xl mx-auto">
+        <h2 className="text-2xl font-bold mb-8 text-gray-800 dark:text-white border-b pb-4">Latest Arrivals</h2>
+
+        {isLoading ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-64 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse"></div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {featuredProducts.length > 0 ? featuredProducts.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            )) : (
+              <p className="col-span-full text-center text-gray-500 py-10">No products available.</p>
+            )}
+          </div>
+        )}
+
+        <div className="mt-12 text-center">
+          <Link href="/products" className="text-emerald-600 hover:underline font-medium">
+            Browse Full Catalog &rarr;
           </Link>
         </div>
       </section>
 
-      {/* 📦 Featured Products - Clean Grid */}
-      <section className="py-20 bg-gray-50 dark:bg-neutral-900/50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex justify-between items-end mb-12">
-            <h2 className="text-3xl font-bold">Featured Mixes</h2>
-            <Link href="/products" className="hidden sm:inline-flex items-center text-sm font-medium hover:text-amber-600 transition-colors">
-              View All <ArrowRight className="ml-1 w-4 h-4" />
-            </Link>
+      {/* Simple Info Section */}
+      <section className="bg-gray-50 dark:bg-neutral-900 py-12 px-6 border-t border-gray-100 dark:border-neutral-800">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+          <div>
+            <h4 className="font-bold mb-2">🌿 Natural Ingredients</h4>
+            <p className="text-gray-500">Made with 100% natural ingredients. No preservatives added.</p>
           </div>
-
-          {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-96 bg-gray-200 dark:bg-gray-800 rounded-2xl animate-pulse"></div>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
-              {featuredProducts.length > 0 ? featuredProducts.map((product) => (
-                <ProductCard key={product._id} product={product} />
-              )) : (
-                <p className="col-span-3 text-center text-gray-500">No products found.</p>
-              )}
-            </div>
-          )}
-
-          <div className="mt-12 text-center sm:hidden">
-            <Link href="/products" className="inline-flex items-center text-sm font-medium hover:text-amber-600 transition-colors">
-              View All Products <ArrowRight className="ml-1 w-4 h-4" />
-            </Link>
+          <div>
+            <h4 className="font-bold mb-2">⚡ Fast Pickup</h4>
+            <p className="text-gray-500">Ready for pickup within minutes of ordering.</p>
           </div>
-        </div>
-      </section>
-
-      {/* ✅ Why Choose Us - Simple List */}
-      <section className="py-24 max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
-          <div className="space-y-4">
-            <div className="w-12 h-12 bg-amber-50 dark:bg-neutral-800 rounded-full flex items-center justify-center text-amber-600 dark:text-amber-400 mb-2 mx-auto md:mx-0">
-              <CheckCircle size={24} />
-            </div>
-            <h3 className="text-xl font-bold">100% Organic Ingredients</h3>
-            <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
-              We source directly from trusted farmers. No chemicals, just pure nature in every sip.
-            </p>
-          </div>
-          <div className="space-y-4">
-            <div className="w-12 h-12 bg-amber-50 dark:bg-neutral-800 rounded-full flex items-center justify-center text-amber-600 dark:text-amber-400 mb-2 mx-auto md:mx-0">
-              <CheckCircle size={24} />
-            </div>
-            <h3 className="text-xl font-bold">Handcrafted Daily</h3>
-            <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
-              Made in small batches to ensure freshness and authentic homemade taste.
-            </p>
-          </div>
-          <div className="space-y-4">
-            <div className="w-12 h-12 bg-amber-50 dark:bg-neutral-800 rounded-full flex items-center justify-center text-amber-600 dark:text-amber-400 mb-2 mx-auto md:mx-0">
-              <CheckCircle size={24} />
-            </div>
-            <h3 className="text-xl font-bold">Instant Pickup</h3>
-            <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
-              Order online and pick up fresh from our Kalikiri store within minutes.
-            </p>
+          <div>
+            <h4 className="font-bold mb-2">📞 Support</h4>
+            <p className="text-gray-500">Call us anytime for bulk orders or questions.</p>
           </div>
         </div>
       </section>
