@@ -12,6 +12,9 @@ export default function Navbar() {
     const { cartCount } = useCart();
     const pathname = usePathname();
 
+    // Check if we are on the home page
+    const isHome = pathname === '/';
+
     useEffect(() => {
         const handleScroll = () => {
             if (window.scrollY > 20) {
@@ -25,32 +28,30 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const navLinks = [
-        { href: '/', label: 'Home' },
-        { href: '/products', label: 'Our Products' },
-        { href: '/about', label: 'About Us' },
-        { href: '/contact', label: 'Contact' },
-    ];
+    // Determine the navbar style state
+    // If not home, we always want the "scrolled" (solid/glass) look for readability.
+    // If home, we only want it when actually scrolled.
+    const useScrolledStyle = !isHome || scrolled;
 
     return (
         <nav
-            className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled
+            className={`fixed top-0 w-full z-50 transition-all duration-300 ${useScrolledStyle
                     ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-lg py-2 border-b border-gray-100 dark:border-slate-800'
                     : 'bg-transparent py-4'
                 }`}
         >
-            <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all ${scrolled ? 'py-1' : 'py-2'}`}>
+            <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all ${useScrolledStyle ? 'py-1' : 'py-2'}`}>
                 <div className="flex justify-between items-center">
 
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2 group">
-                        <div className={`p-2 rounded-xl transition-colors ${scrolled
+                        <div className={`p-2 rounded-xl transition-colors ${useScrolledStyle
                                 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
                                 : 'bg-white/90 text-amber-700 shadow-lg backdrop-blur-sm'
                             }`}>
                             <Coffee size={24} strokeWidth={2.5} />
                         </div>
-                        <span className={`text-2xl font-extrabold tracking-tight ${scrolled ? 'text-stone-800 dark:text-stone-100' : 'text-white drop-shadow-md'
+                        <span className={`text-2xl font-extrabold tracking-tight ${useScrolledStyle ? 'text-stone-800 dark:text-stone-100' : 'text-white drop-shadow-md'
                             }`}>
                             Malik Tea
                         </span>
@@ -62,7 +63,7 @@ export default function Navbar() {
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className={`font-semibold text-sm uppercase tracking-wide transition-all duration-300 relative group ${scrolled
+                                className={`font-semibold text-sm uppercase tracking-wide transition-all duration-300 relative group ${useScrolledStyle
                                         ? 'text-stone-600 hover:text-amber-600 dark:text-stone-300 dark:hover:text-amber-400'
                                         : 'text-white/90 hover:text-white'
                                     }`}
@@ -78,7 +79,7 @@ export default function Navbar() {
                             {/* Cart Button */}
                             <Link
                                 href="/cart"
-                                className={`relative p-2.5 rounded-full transition-all duration-300 group ${scrolled
+                                className={`relative p-2.5 rounded-full transition-all duration-300 group ${useScrolledStyle
                                         ? 'bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:hover:bg-amber-900/40'
                                         : 'bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm'
                                     }`}
@@ -99,7 +100,7 @@ export default function Navbar() {
 
                         <Link
                             href="/cart"
-                            className={`relative p-2 rounded-full transition-colors ${scrolled ? 'text-stone-800 dark:text-stone-200' : 'text-white'
+                            className={`relative p-2 rounded-full transition-colors ${useScrolledStyle ? 'text-stone-800 dark:text-stone-200' : 'text-white'
                                 }`}
                         >
                             <ShoppingCart size={24} />
@@ -112,7 +113,7 @@ export default function Navbar() {
 
                         <button
                             onClick={() => setIsOpen(!isOpen)}
-                            className={`p-2 rounded-lg focus:outline-none transition-colors ${scrolled ? 'text-stone-800 dark:text-stone-200' : 'text-white'
+                            className={`p-2 rounded-lg focus:outline-none transition-colors ${useScrolledStyle ? 'text-stone-800 dark:text-stone-200' : 'text-white'
                                 }`}
                         >
                             {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -148,3 +149,10 @@ export default function Navbar() {
         </nav>
     );
 }
+
+const navLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/products', label: 'Our Products' },
+    { href: '/about', label: 'About Us' },
+    { href: '/contact', label: 'Contact' },
+];
