@@ -48,7 +48,8 @@ export default function Footer() {
                     </div>
                 </div>
                 <div className="mt-8 border-t border-gray-800 pt-8 text-center text-sm">
-                    &copy; {new Date().getFullYear()} Malik Tea Stall. All rights reserved.
+                    &copy; {new Date().getFullYear()} Malik Tea Stall. All rights reserved. <br />
+                    <span className="text-xs text-gray-700">API: {process.env.NEXT_PUBLIC_API_URL || 'Using Local'}</span>
                 </div>
             </div>
         </footer>
