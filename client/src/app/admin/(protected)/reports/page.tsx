@@ -13,7 +13,7 @@ export default function ReportsPage() {
 
     const fetchOrders = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/orders');
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/orders`);
             const data = await res.json();
             setOrders(data);
         } catch (error) {
@@ -188,8 +188,8 @@ export default function ReportsPage() {
                                             <td className="py-3 px-2 font-bold">₹{order.totalAmount}</td>
                                             <td className="py-3 px-2">
                                                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${order.status === 'Completed' ? 'bg-green-100 text-green-700' :
-                                                        order.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
-                                                            'bg-gray-100 text-gray-700'
+                                                    order.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
+                                                        'bg-gray-100 text-gray-700'
                                                     }`}>
                                                     {order.status}
                                                 </span>

@@ -15,8 +15,8 @@ export default function AdminDashboard() {
     const fetchData = async () => {
         try {
             const [ordersRes, productsRes] = await Promise.all([
-                fetch('http://localhost:5000/api/orders'),
-                fetch('http://localhost:5000/api/products')
+                fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/orders`),
+                fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/products`)
             ]);
 
             const ordersData = await ordersRes.json();
@@ -118,8 +118,8 @@ export default function AdminDashboard() {
                                                     </p>
                                                 </div>
                                                 <span className={`text-xs font-bold px-2 py-1 rounded ${order.status === 'Pending'
-                                                        ? 'bg-yellow-100 text-yellow-800'
-                                                        : 'bg-green-100 text-green-800'
+                                                    ? 'bg-yellow-100 text-yellow-800'
+                                                    : 'bg-green-100 text-green-800'
                                                     }`}>
                                                     {order.status}
                                                 </span>

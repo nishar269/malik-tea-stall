@@ -21,7 +21,7 @@ export default function AdminOffersPage() {
 
     const fetchOffers = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/offers?mode=admin');
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/offers?mode=admin`);
             const data = await res.json();
             setOffers(data);
         } catch (error) {
@@ -34,7 +34,7 @@ export default function AdminOffersPage() {
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:5000/api/offers', {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/offers`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newOffer)
@@ -61,7 +61,7 @@ export default function AdminOffersPage() {
     const handleDelete = async (id: string) => {
         if (!confirm('Delete this offer?')) return;
         try {
-            await fetch(`http://localhost:5000/api/offers/${id}`, { method: 'DELETE' });
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/offers/${id}`, { method: 'DELETE' });
             fetchOffers();
         } catch (error) {
             console.error(error);

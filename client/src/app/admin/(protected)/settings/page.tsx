@@ -50,7 +50,7 @@ export default function AdminSettingsPage() {
 
         setSaving(true);
         try {
-            const res = await fetch('http://localhost:5000/api/auth/change-password', {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auth/change-password`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

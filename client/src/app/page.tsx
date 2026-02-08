@@ -14,7 +14,7 @@ export default function Home() {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/products');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/products`);
       const data = await res.json();
       setFeaturedProducts(data.slice(0, 3));
     } catch (error) {

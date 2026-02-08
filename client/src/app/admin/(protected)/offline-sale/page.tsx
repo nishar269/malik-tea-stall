@@ -21,7 +21,7 @@ export default function OfflineSalePage() {
 
     const fetchProducts = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/products');
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/products`);
             const data = await res.json();
             setProducts(data);
         } catch (error) {
@@ -93,7 +93,7 @@ export default function OfflineSalePage() {
                 status: "Completed"
             };
 
-            const res = await fetch('http://localhost:5000/api/orders', {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/orders`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData),

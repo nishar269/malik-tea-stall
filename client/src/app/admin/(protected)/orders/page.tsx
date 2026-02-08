@@ -13,7 +13,7 @@ export default function AdminOrdersPage() {
 
     const fetchOrders = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/orders');
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/orders`);
             const data = await res.json();
             setOrders(data);
         } catch (error) {
@@ -25,7 +25,7 @@ export default function AdminOrdersPage() {
 
     const handleStatusChange = async (id: string, newStatus: string) => {
         try {
-            await fetch(`http://localhost:5000/api/orders/${id}`, {
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/orders/${id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus })
@@ -39,7 +39,7 @@ export default function AdminOrdersPage() {
     const handleDelete = async (id: string) => {
         if (!confirm('Delete this order?')) return;
         try {
-            await fetch(`http://localhost:5000/api/orders/${id}`, { method: 'DELETE' });
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/orders/${id}`, { method: 'DELETE' });
             setOrders(orders.filter(o => o._id !== id));
         } catch (error) {
             console.error('Error deleting order:', error);
