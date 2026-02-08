@@ -1,21 +1,39 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { products as mockProducts } from '@/data/mockProducts';
 import { useRouter } from 'next/navigation';
+import { Product } from '@/types';
 
 export default function OfflineSalePage() {
     const router = useRouter();
+    const [products, setProducts] = useState<Product[]>([]);
     const [selectedProduct, setSelectedProduct] = useState("");
     const [selectedVariant, setSelectedVariant] = useState("");
     const [quantity, setQuantity] = useState(1);
     const [cart, setCart] = useState<any[]>([]);
     const [total, setTotal] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
 
     const [availableVariants, setAvailableVariants] = useState<any[]>([]);
 
     useEffect(() => {
+        fetchProducts();
+    }, []);
+
+    const fetchProducts = async () => {
+        try {
+            const res = await fetch('http://localhost:5000/api/products');
+            const data = await res.json();
+            setProducts(data);
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
         if (selectedProduct) {
-            const product = mockProducts.find(p => p._id === selectedProduct);
+            const product = products.find(p => p._id === selectedProduct);
             if (product) {
                 setAvailableVariants(product.variants);
                 if (product.variants.length > 0) {
@@ -26,12 +44,12 @@ export default function OfflineSalePage() {
             setAvailableVariants([]);
             setSelectedVariant("");
         }
-    }, [selectedProduct]);
+    }, [selectedProduct, products]);
 
     const addToCart = () => {
         if (!selectedProduct || !selectedVariant) return;
 
-        const product = mockProducts.find(p => p._id === selectedProduct);
+        const product = products.find(p => p._id === selectedProduct);
         if (!product) return;
 
         const variant = product.variants.find(v => v.weight === selectedVariant);
@@ -47,9 +65,6 @@ export default function OfflineSalePage() {
 
         setCart([...cart, newItem]);
         setTotal(total + (variant.price * quantity));
-
-        // Reset selections slightly or keep for ease? Resetting.
-        // setSelectedProduct(""); 
     };
 
     const removeFromCart = (index: number) => {
@@ -68,6 +83,7 @@ export default function OfflineSalePage() {
                 customerPhone: "OFFLINE-SALE",
                 items: cart.map(item => ({
                     product: item.productId,
+                    name: item.name,
                     variant: item.variant,
                     quantity: item.quantity,
                     price: item.price
@@ -101,6 +117,15 @@ export default function OfflineSalePage() {
         }
     };
 
+    if (isLoading) {
+        return (
+            <div className="text-center py-20">
+                <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-green-500 border-t-transparent"></div>
+                <p className="mt-4 text-gray-500">Loading products...</p>
+            </div>
+        );
+    }
+
     return (
         <div className="max-w-4xl mx-auto">
             <h1 className="text-3xl font-bold mb-8">New Offline Sale</h1>
@@ -119,7 +144,7 @@ export default function OfflineSalePage() {
                                 onChange={(e) => setSelectedProduct(e.target.value)}
                             >
                                 <option value="">Select Product...</option>
-                                {mockProducts.map(p => (
+                                {products.map(p => (
                                     <option key={p._id} value={p._id}>{p.name}</option>
                                 ))}
                             </select>
@@ -203,4 +228,3 @@ export default function OfflineSalePage() {
         </div>
     );
 }
-

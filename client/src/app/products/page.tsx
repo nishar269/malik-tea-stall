@@ -1,13 +1,31 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ProductCard from '@/components/ProductCard';
-import { products } from '@/data/mockProducts';
+import { Product } from '@/types';
 
 const categories = ["All", "Health Mix", "Tea Powder"];
 
 export default function ProductsPage() {
+    const [products, setProducts] = useState<Product[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [searchQuery, setSearchQuery] = useState("");
+
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
+    const fetchProducts = async () => {
+        try {
+            const res = await fetch('http://localhost:5000/api/products');
+            const data = await res.json();
+            setProducts(data);
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const filteredProducts = products.filter(product => {
         const matchesCategory = selectedCategory === "All" || product.category === selectedCategory;
@@ -38,8 +56,8 @@ export default function ProductsPage() {
                                 key={cat}
                                 onClick={() => setSelectedCategory(cat)}
                                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${selectedCategory === cat
-                                        ? 'bg-white text-green-700 shadow-sm'
-                                        : 'text-gray-600 hover:text-green-600'
+                                    ? 'bg-white text-green-700 shadow-sm'
+                                    : 'text-gray-600 hover:text-green-600'
                                     }`}
                             >
                                 {cat}
@@ -49,7 +67,12 @@ export default function ProductsPage() {
                 </div>
             </div>
 
-            {filteredProducts.length > 0 ? (
+            {isLoading ? (
+                <div className="text-center py-20">
+                    <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-green-500 border-t-transparent"></div>
+                    <p className="mt-4 text-gray-500">Loading products...</p>
+                </div>
+            ) : filteredProducts.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     {filteredProducts.map((product) => (
                         <ProductCard key={product._id} product={product} />

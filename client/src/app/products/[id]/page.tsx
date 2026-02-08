@@ -1,7 +1,7 @@
 'use client';
 import { useParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { products } from '@/data/mockProducts';
+import { Product } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
@@ -9,18 +9,39 @@ import { useCart } from '@/context/CartContext';
 export default function ProductDetailsPage() {
     const { id } = useParams();
     const { addToCart } = useCart();
-    const [sku, setSku] = useState<string | null>(null); // To handle hydration
+    const [product, setProduct] = useState<Product | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
     const [quantity, setQuantity] = useState(1);
 
-    // Hydration fix for useParams
     useEffect(() => {
-        if (id) setSku(Array.isArray(id) ? id[0] : id);
+        if (id) {
+            fetchProduct(Array.isArray(id) ? id[0] : id);
+        }
     }, [id]);
 
-    if (!sku) return <div className="text-center py-20">Loading...</div>;
+    const fetchProduct = async (productId: string) => {
+        try {
+            const res = await fetch(`http://localhost:5000/api/products/${productId}`);
+            if (res.ok) {
+                const data = await res.json();
+                setProduct(data);
+            }
+        } catch (error) {
+            console.error('Error fetching product:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-    const product = products.find((p) => p._id === sku);
+    if (isLoading) {
+        return (
+            <div className="text-center py-20">
+                <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-green-500 border-t-transparent"></div>
+                <p className="mt-4 text-gray-500">Loading product...</p>
+            </div>
+        );
+    }
 
     if (!product) {
         return (
@@ -34,19 +55,19 @@ export default function ProductDetailsPage() {
     }
 
     const selectedVariant = product.variants[selectedVariantIndex];
-    const totalPrice = selectedVariant.price * quantity;
+    const totalPrice = selectedVariant ? selectedVariant.price * quantity : 0;
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 {/* Image Section */}
-                <div className="relative h-96 w-full bg-gray-100 rounded-2xl overflow-hidden shadow-lg">
+                <div className="relative h-96 w-full bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl overflow-hidden shadow-lg p-6">
                     {product.imageUrl ? (
                         <Image
                             src={product.imageUrl}
                             alt={product.name}
                             fill
-                            className="object-cover"
+                            className="object-contain p-4"
                         />
                     ) : (
                         <div className="flex items-center justify-center h-full text-6xl text-gray-400">
@@ -70,7 +91,7 @@ export default function ProductDetailsPage() {
                         {product.description}
                     </p>
 
-                    {!product.isOutOfStock ? (
+                    {!product.isOutOfStock && selectedVariant ? (
                         <>
                             {/* Variant Selector */}
                             <div className="mb-6">
