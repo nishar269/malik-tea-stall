@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://malik-tea-stall.vercel.app/sitemap.xml
